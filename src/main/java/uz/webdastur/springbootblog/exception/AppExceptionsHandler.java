@@ -1,22 +1,46 @@
 package uz.webdastur.springbootblog.exception;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.WebRequest;
 import uz.webdastur.springbootblog.dto.response.Response;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @RestController
 @ControllerAdvice
 public class AppExceptionsHandler {
+
     @ExceptionHandler(value = {CustomAppException.class})
     public ResponseEntity<Response<Object>> handleCustomAppException(CustomAppException ex, WebRequest request) {
         Response<Object> response = new Response<>();
         response.setStatus(ex.getStatus().value());
         response.setMessage(ex.getMessage());
         return new ResponseEntity<>(response, ex.getStatus());
+    }
+
+    @ExceptionHandler(value = {MethodArgumentNotValidException.class})
+    public ResponseEntity<Response<Object>> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex,
+                                                                                  WebRequest request) {
+        Response<Object> response = new Response<>();
+        Map<String, String> errors = new HashMap<>();
+        for (FieldError error : ex.getBindingResult().getFieldErrors()) {
+            errors.put(error.getField(), error.getDefaultMessage());
+        }
+        for (ObjectError error : ex.getBindingResult().getGlobalErrors()) {
+            errors.put(error.getObjectName(), error.getDefaultMessage());
+        }
+        response.setStatus(HttpStatus.BAD_REQUEST.value());
+        response.setMessage(errors);
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
 //    @ExceptionHandler(value = {AppExceptions.EntityAlreadyExists.class})

@@ -13,6 +13,8 @@ import uz.webdastur.springbootblog.dto.response.Response;
 import uz.webdastur.springbootblog.dto.response.UserResponse;
 import uz.webdastur.springbootblog.service.UserService;
 
+import javax.validation.Valid;
+
 @AllArgsConstructor
 @RestController
 @RequestMapping("api/v1")
@@ -21,7 +23,7 @@ public class UserController {
     private final ModelMapper modelMapper;
 
     @PostMapping("/user/signup")
-    public Response<UserResponse> signUp(@RequestBody UserSignUpRequest userSignUpRequest) {
+    public Response<UserResponse> signUp(@Valid @RequestBody UserSignUpRequest userSignUpRequest) {
         UserDTO userDTO = modelMapper.map(userSignUpRequest, UserDTO.class);
         UserResponse returnValue;
         returnValue = modelMapper.map(userService.signup(userDTO), UserResponse.class);
@@ -31,7 +33,7 @@ public class UserController {
     }
 
     @PostMapping("/user/login")
-    public Response<UserResponse> login(@RequestBody UserLoginRequest userLoginRequest) {
+    public Response<UserResponse> login(@Valid @RequestBody UserLoginRequest userLoginRequest) {
         UserDTO userDTO = modelMapper.map(userLoginRequest, UserDTO.class);
         UserResponse returnValue;
         returnValue = modelMapper.map(userService.login(userDTO), UserResponse.class);

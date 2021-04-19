@@ -15,7 +15,7 @@ import org.springframework.http.HttpStatus;
 public class Response<T> {
     private int status;
     private T payload;
-    private String message;
+    private Object message;
 
     public static <T> Response<T> ok() {
         Response<T> response = new Response<>();
