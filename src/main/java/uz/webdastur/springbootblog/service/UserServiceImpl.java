@@ -2,10 +2,12 @@ package uz.webdastur.springbootblog.service;
 
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import uz.webdastur.springbootblog.dto.model.UserDTO;
 import uz.webdastur.springbootblog.exception.AppExceptions;
+import uz.webdastur.springbootblog.exception.CustomAppException;
 import uz.webdastur.springbootblog.model.User;
 import uz.webdastur.springbootblog.repository.UserRepository;
 import uz.webdastur.springbootblog.utils.StringUtils;
@@ -33,7 +35,7 @@ public class UserServiceImpl implements UserService {
             returnValue = modelMapper.map(user, UserDTO.class);
             return returnValue;
         } else {
-            throw AppExceptions.alreadyExists("User already exists " + userDTO.getEmail());
+            throw new CustomAppException("User already exists " + userDTO.getEmail(), HttpStatus.CONFLICT);
         }
     }
 
@@ -42,12 +44,12 @@ public class UserServiceImpl implements UserService {
         Optional<User> user = Optional.ofNullable(userRepository.findByEmail(userDTO.getEmail()));
         if (user.isPresent()) {
             if (!passwordEncoder.matches(userDTO.getPassword(), user.get().getPassword())) {
-                throw AppExceptions.notFound("Password does not match " + userDTO.getEmail());
+                throw new CustomAppException("Password does not match " + userDTO.getEmail(), HttpStatus.NOT_FOUND);
             } else {
                 return modelMapper.map(user.get(), UserDTO.class);
             }
         } else {
-            throw AppExceptions.notFound("User not found " + userDTO.getEmail());
+            throw new CustomAppException("User not found " + userDTO.getEmail(), HttpStatus.NOT_FOUND);
         }
     }
 }
