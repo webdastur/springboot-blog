@@ -29,4 +29,10 @@ public class Response<T> {
         response.setStatus(HttpStatus.CONFLICT.value());
         return response;
     }
+
+    public static <T> Response<T> notFound() {
+        Response<T> response = new Response<>();
+        response.setStatus(HttpStatus.NOT_FOUND.value());
+        return response;
+    }
 }

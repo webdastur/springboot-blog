@@ -17,4 +17,11 @@ public class AppExceptionsHandler {
         response.setMessage(ex.getMessage());
         return new ResponseEntity<>(response, HttpStatus.CONFLICT);
     }
+
+    @ExceptionHandler(value = {AppExceptions.EntityNotFound.class})
+    public ResponseEntity<Response<Object>> handleEntityNotFound(Exception ex, WebRequest request) {
+        Response<Object> response = Response.notFound();
+        response.setMessage(ex.getMessage());
+        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+    }
 }
