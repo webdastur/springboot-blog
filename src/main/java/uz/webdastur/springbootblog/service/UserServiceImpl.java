@@ -2,16 +2,22 @@ package uz.webdastur.springbootblog.service;
 
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import uz.webdastur.springbootblog.dto.model.UserDTO;
-import uz.webdastur.springbootblog.exception.AppExceptions;
 import uz.webdastur.springbootblog.exception.CustomAppException;
 import uz.webdastur.springbootblog.model.User;
 import uz.webdastur.springbootblog.repository.UserRepository;
+import uz.webdastur.springbootblog.security.JwtTokenProvider;
 import uz.webdastur.springbootblog.utils.StringUtils;
 
+import java.util.ArrayList;
 import java.util.Optional;
 
 @AllArgsConstructor
@@ -50,6 +56,36 @@ public class UserServiceImpl implements UserService {
             }
         } else {
             throw new CustomAppException("User not found " + userDTO.getEmail(), HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @Override
+    public UserDTO getUser(String email) {
+        Optional<User> user = Optional.ofNullable(userRepository.findByEmail(email));
+        if (user.isPresent()) {
+            UserDTO returnValue = new UserDTO();
+            BeanUtils.copyProperties(user.get(), returnValue);
+            return returnValue;
+//            return modelMapper.map(user.get(), UserDTO.class);
+        } else {
+            throw new CustomAppException("User not found " + email, HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
+        Optional<User> user = Optional.ofNullable(userRepository.findByEmail(s));
+        if (user.isPresent()) {
+            return new org.springframework.security.core.userdetails.User(
+                    s,
+                    user.get().getPassword(),
+                    true,
+                    true,
+                    true,
+                    true,
+                    new ArrayList<>());
+        } else {
+            throw new CustomAppException("User not found " + s, HttpStatus.NOT_FOUND);
         }
     }
 }

@@ -1,8 +1,8 @@
 package uz.webdastur.springbootblog.exception;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -25,6 +25,14 @@ public class AppExceptionsHandler {
         response.setStatus(ex.getStatus().value());
         response.setMessage(ex.getMessage());
         return new ResponseEntity<>(response, ex.getStatus());
+    }
+
+    @ExceptionHandler(value = {BadCredentialsException.class})
+    public ResponseEntity<Response<Object>> handleBadCredentialsException(BadCredentialsException ex, WebRequest request) {
+        Response<Object> response = new Response<>();
+        response.setStatus(HttpStatus.FORBIDDEN.value());
+        response.setMessage(ex.getMessage());
+        return new ResponseEntity<>(response, HttpStatus.FORBIDDEN);
     }
 
     @ExceptionHandler(value = {MethodArgumentNotValidException.class})
