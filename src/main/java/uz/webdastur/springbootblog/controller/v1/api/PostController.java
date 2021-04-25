@@ -52,4 +52,13 @@ public class PostController {
         response.setPayload(modelMapper.map(postDTO, PostResponse.class));
         return response;
     }
+
+    @PutMapping("/posts/{postId}")
+    public Response<PostResponse> updatePost(@PathVariable String postId, @Valid @RequestBody PostRequest postRequest) {
+        PostDTO post = modelMapper.map(postRequest, PostDTO.class);
+        PostDTO postDTO = postService.updatePost(postId, post);
+        Response<PostResponse> response = Response.ok();
+        response.setPayload(modelMapper.map(postDTO, PostResponse.class));
+        return response;
+    }
 }

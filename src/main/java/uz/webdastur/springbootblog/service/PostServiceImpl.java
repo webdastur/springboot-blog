@@ -55,6 +55,22 @@ public class PostServiceImpl implements PostService {
         }
     }
 
+    @Override
+    public PostDTO updatePost(String postId, PostDTO postDTO) {
+        Optional<Post> post = Optional.ofNullable(postRepository.findByPostId(postId));
+        Post updatedPost;
+        PostDTO returnValue;
+        if (post.isPresent()) {
+            post.get().setContent(postDTO.getContent());
+            post.get().setTitle(postDTO.getTitle());
+            updatedPost = postRepository.save(post.get());
+            returnValue = modelMapper.map(updatedPost, PostDTO.class);
+            return returnValue;
+        } else {
+            throw new CustomAppException("Post not found.", HttpStatus.NOT_FOUND);
+        }
+    }
+
     private User getCurrentUser() {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String email;

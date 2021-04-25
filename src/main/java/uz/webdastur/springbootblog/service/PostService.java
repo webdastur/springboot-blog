@@ -10,4 +10,6 @@ public interface PostService {
     Page<Post> getAllPosts(int page, int size);
 
     PostDTO getPost(String postId);
+
+    PostDTO updatePost(String postId, PostDTO postDTO);
 }
