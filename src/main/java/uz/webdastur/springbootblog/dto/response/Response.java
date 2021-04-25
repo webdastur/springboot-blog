@@ -16,8 +16,8 @@ public class Response<T> {
     private int status;
     private T payload;
     private Object message;
-    private int currentPage;
-    private int totalPages;
+    private Integer currentPage;
+    private Integer totalPages;
 
     public static <T> Response<T> ok() {
         Response<T> response = new Response<>();

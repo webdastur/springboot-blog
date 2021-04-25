@@ -44,4 +44,12 @@ public class PostController {
         response.setPayload(returnValue);
         return response;
     }
+
+    @GetMapping("/posts/{postId}")
+    public Response<PostResponse> getPostByPostId(@PathVariable String postId) {
+        PostDTO postDTO = postService.getPost(postId);
+        Response<PostResponse> response = Response.ok();
+        response.setPayload(modelMapper.map(postDTO, PostResponse.class));
+        return response;
+    }
 }

@@ -5,15 +5,19 @@ import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import uz.webdastur.springbootblog.dto.model.PostDTO;
+import uz.webdastur.springbootblog.exception.CustomAppException;
 import uz.webdastur.springbootblog.model.Post;
 import uz.webdastur.springbootblog.model.User;
 import uz.webdastur.springbootblog.repository.PostRepository;
 import uz.webdastur.springbootblog.repository.UserRepository;
 import uz.webdastur.springbootblog.utils.StringUtils;
+
+import java.util.Optional;
 
 @AllArgsConstructor
 @Service
@@ -37,6 +41,18 @@ public class PostServiceImpl implements PostService {
         Pageable pageable = PageRequest.of(page, size);
         Page<Post> postPage = postRepository.findAll(pageable);
         return postPage;
+    }
+
+    @Override
+    public PostDTO getPost(String postId) {
+        Optional<Post> post = Optional.ofNullable(postRepository.findByPostId(postId));
+        PostDTO returnValue;
+        if (post.isPresent()) {
+            returnValue = modelMapper.map(post.get(), PostDTO.class);
+            return returnValue;
+        } else {
+            throw new CustomAppException("Post not found.", HttpStatus.NOT_FOUND);
+        }
     }
 
     private User getCurrentUser() {

@@ -8,4 +8,6 @@ public interface PostService {
     PostDTO createPost(PostDTO postDTO);
 
     Page<Post> getAllPosts(int page, int size);
+
+    PostDTO getPost(String postId);
 }
