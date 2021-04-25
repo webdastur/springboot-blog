@@ -1,5 +1,6 @@
 package uz.webdastur.springbootblog.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.*;
 
 import javax.persistence.*;
@@ -25,6 +26,7 @@ public class User {
     private String password;
     @Column(unique = true)
     private String email;
+    @JsonBackReference
     @OneToMany(mappedBy = "author")
     private Set<Post> posts;
 }

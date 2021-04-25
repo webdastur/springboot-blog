@@ -10,6 +10,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import uz.webdastur.springbootblog.exception.RestAuthenticationEntryPoint;
 
 @AllArgsConstructor
 @EnableWebSecurity
@@ -17,6 +18,7 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
     private final UserDetailsService userDetailsService;
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
+    private final RestAuthenticationEntryPoint restAuthenticationEntryPoint;
 
     @Bean
     public AuthenticationManager authenticationManager() throws Exception {
@@ -37,6 +39,8 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/v1/user/login").permitAll()
                 .antMatchers("/api/v1/user/signup").permitAll()
                 .anyRequest().authenticated()
+                .and()
+                .exceptionHandling().authenticationEntryPoint(restAuthenticationEntryPoint)
                 .and()
                 .apply(new JwtConfigurer(jwtTokenProvider));
 
