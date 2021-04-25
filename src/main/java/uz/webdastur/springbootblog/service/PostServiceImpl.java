@@ -2,6 +2,9 @@ package uz.webdastur.springbootblog.service;
 
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -11,8 +14,6 @@ import uz.webdastur.springbootblog.model.User;
 import uz.webdastur.springbootblog.repository.PostRepository;
 import uz.webdastur.springbootblog.repository.UserRepository;
 import uz.webdastur.springbootblog.utils.StringUtils;
-
-import java.util.Optional;
 
 @AllArgsConstructor
 @Service
@@ -29,6 +30,13 @@ public class PostServiceImpl implements PostService {
         post.setPostId(stringUtils.generateRandomString(30));
         Post savedPost = postRepository.save(post);
         return modelMapper.map(savedPost, PostDTO.class);
+    }
+
+    @Override
+    public Page<Post> getAllPosts(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Post> postPage = postRepository.findAll(pageable);
+        return postPage;
     }
 
     private User getCurrentUser() {

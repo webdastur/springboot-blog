@@ -1,7 +1,7 @@
 package uz.webdastur.springbootblog.repository;
 
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.PagingAndSortingRepository;
 import uz.webdastur.springbootblog.model.Post;
 
-public interface PostRepository extends CrudRepository<Post, Long> {
+public interface PostRepository extends PagingAndSortingRepository<Post, Long> {
 }

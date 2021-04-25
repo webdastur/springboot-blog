@@ -2,17 +2,18 @@ package uz.webdastur.springbootblog.controller.v1.api;
 
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.modelmapper.TypeToken;
+import org.springframework.data.domain.Page;
+import org.springframework.web.bind.annotation.*;
 import uz.webdastur.springbootblog.dto.model.PostDTO;
 import uz.webdastur.springbootblog.dto.request.PostRequest;
 import uz.webdastur.springbootblog.dto.response.PostResponse;
 import uz.webdastur.springbootblog.dto.response.Response;
+import uz.webdastur.springbootblog.model.Post;
 import uz.webdastur.springbootblog.service.PostService;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @AllArgsConstructor
 @RestController
@@ -26,6 +27,20 @@ public class PostController {
         PostDTO postDTO = modelMapper.map(postRequest, PostDTO.class);
         PostResponse returnValue = modelMapper.map(postService.createPost(postDTO), PostResponse.class);
         Response<PostResponse> response = Response.ok();
+        response.setPayload(returnValue);
+        return response;
+    }
+
+    @GetMapping("/posts")
+    public Response<List<PostResponse>> getAllPosts(
+            @RequestParam(name = "page", defaultValue = "0") int page,
+            @RequestParam(name = "size", defaultValue = "10") int size) {
+        Page<Post> postPage = postService.getAllPosts(page, size);
+        List<PostResponse> returnValue = modelMapper.map(postPage.getContent(), new TypeToken<List<PostResponse>>() {
+        }.getType());
+        Response<List<PostResponse>> response = Response.ok();
+        response.setTotalPages(postPage.getTotalPages());
+        response.setCurrentPage(postPage.getNumber());
         response.setPayload(returnValue);
         return response;
     }
