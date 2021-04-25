@@ -61,4 +61,12 @@ public class PostController {
         response.setPayload(modelMapper.map(postDTO, PostResponse.class));
         return response;
     }
+
+    @DeleteMapping("/posts/{postId}")
+    public Response<String> deletePostByPostId(@PathVariable String postId) {
+        postService.deletePost(postId);
+        Response<String> response = Response.ok();
+        response.setMessage("Post successfully deleted.");
+        return response;
+    }
 }

@@ -17,6 +17,7 @@ import uz.webdastur.springbootblog.repository.PostRepository;
 import uz.webdastur.springbootblog.repository.UserRepository;
 import uz.webdastur.springbootblog.utils.StringUtils;
 
+import javax.transaction.Transactional;
 import java.util.Optional;
 
 @AllArgsConstructor
@@ -66,6 +67,17 @@ public class PostServiceImpl implements PostService {
             updatedPost = postRepository.save(post.get());
             returnValue = modelMapper.map(updatedPost, PostDTO.class);
             return returnValue;
+        } else {
+            throw new CustomAppException("Post not found.", HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @Transactional
+    @Override
+    public void deletePost(String postId) {
+        Optional<Post> post = Optional.ofNullable(postRepository.findByPostId(postId));
+        if (post.isPresent()) {
+            postRepository.deleteByPostId(postId);
         } else {
             throw new CustomAppException("Post not found.", HttpStatus.NOT_FOUND);
         }
