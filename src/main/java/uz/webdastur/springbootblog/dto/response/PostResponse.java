@@ -1,7 +1,7 @@
 package uz.webdastur.springbootblog.dto.response;
 
 import lombok.*;
-import uz.webdastur.springbootblog.model.User;
+import uz.webdastur.springbootblog.dto.model.UserDTO;
 
 @Data
 @Builder
@@ -13,5 +13,5 @@ public class PostResponse {
     private String postId;
     private String title;
     private String content;
-    private User author;
+    private UserDTO author;
 }

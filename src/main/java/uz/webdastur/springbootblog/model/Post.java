@@ -1,10 +1,10 @@
 package uz.webdastur.springbootblog.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 
 import javax.persistence.*;
 
-@Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -18,7 +18,8 @@ public class Post {
     private String postId; // for public use
     private String title;
     private String content;
-    @ManyToOne
+    @JsonManagedReference
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "author_id")
     private User author;
 }

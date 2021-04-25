@@ -1,5 +1,6 @@
 package uz.webdastur.springbootblog.dto.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 import uz.webdastur.springbootblog.model.Post;
@@ -20,5 +21,6 @@ public class UserDTO {
     private String username;
     private String password;
     private String email;
+    @JsonBackReference
     private Set<Post> posts;
 }
